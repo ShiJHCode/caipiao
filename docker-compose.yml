@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: caipiao-backend:1.0.0
+    container_name: caipiao-backend
+    ports:
+      # 后端调试端口（宿主机 18081 -> 容器 8080），可注释掉不暴露
+      - "18081:8080"
+    environment:
+      # 数据库默认连远程 MySQL（与 application.yml 默认值一致，可用 .env 覆盖）
+      DB_URL: ${DB_URL:-jdbc:mysql://172.16.206.128:3306/caipiao_dlt?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    image: caipiao-frontend:1.0.0
+    container_name: caipiao-frontend
+    ports:
+      # 主访问入口（宿主机 18080 -> 容器 80），避开常见端口
+      - "18080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

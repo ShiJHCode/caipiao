@@ -1,0 +1,42 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: dlt-lottery
+  datasource:
+    url: ${DB_URL:jdbc:mysql://172.16.206.128:3306/caipiao_dlt?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+
+# 大乐透爬虫配置
+lottery:
+  crawl:
+    # 体彩官网大乐透历史开奖接口
+    url: https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry
+    game-no: 85
+    page-size: 100
+    # 首次默认拉取期数
+    default-count: 150
+    # 冷号统计窗口（最近多少期）
+    cold-window: 30
+    connect-timeout: 10000
+    read-timeout: 15000
+  ssq-crawl:
+    # 中国福利彩票官网双色球历史开奖接口
+    url: https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice
+    default-count: 150
+
+logging:
+  level:
+    com.caipiao: info
